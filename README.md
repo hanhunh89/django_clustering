@@ -57,8 +57,29 @@ django를 다중화해보자
      ProxyPassReverse / balancer://my_django_cluster/
    </VirtualHost>
    ```
-   위의 ServerName은 apache의 도메인(또는 ip)를 입력합니다. 
-   
+   위의 ServerName은 apache의 도메인(또는 ip)를 의미합니다.
+
+   이제 virtualhost가 충돌하지 않게 정리합니다.
+   ```
+   cd /etc/apache2/sites-enabled
+   ls
+   ```
+   ls의 결과를 보면 아래의 두개 파일이 보입니다.
+   ```
+   aaa@apache:/etc/apache2/sites-enabled$ ls
+   000-default.conf  my.conf
+   ```
+   my.conf는 충돌할 우려가 있으므로 해제합니다.
+   ```
+   sudo a2dissite my.conf
+   ```
+   다시 ls를 쳐보면 my.conf가 사라졌습니다.
+
+   이제 cluster.conf를 적용합니다.
+   ```
+   sudo a2ensite cluster.conf
+   ```
+
    아파치 서버 재시작
    ```
    sudo service apache2 restart
