@@ -56,6 +56,8 @@ django를 다중화해보자
      ProxyPass / balancer://my_django_cluster/
      ProxyPassReverse / balancer://my_django_cluster/
    </VirtualHost>
+   ErrorLog ${APACHE_LOG_DIR}/error.log
+   CustomLog ${APACHE_LOG_DIR}/access.log combined
    ```
    위의 ServerName은 apache의 도메인(또는 ip)를 의미합니다.
 
