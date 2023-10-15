@@ -85,4 +85,6 @@ django를 다중화해보자
    sudo service apache2 restart
    ```
 
+
+->>> apache.conf 설정에 문제가 있어 안된다. 내일 다시 봅시당 빠잉 
    
