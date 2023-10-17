@@ -8,7 +8,7 @@ apache, django, mariaDB, google cloud storage를 이용하여 WAS(django)를 다
 
 먼저 한개의 서버에 아파치, 장고, 마리아디비를 한번에 구축했다.
 
-서비스가 늘어나면서 web-was-db 를 세개의 서버로 분리했다.
+그 다음 사용자가 늘어나면서 web-was-db 를 세개의 서버로 분리했다.
 
 이제 또다시 서비스가 늘고있다. 
 
