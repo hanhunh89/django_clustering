@@ -57,9 +57,9 @@ django를 다중화해보자
      ErrorLog ${APACHE_LOG_DIR}/error.log
      CustomLog ${APACHE_LOG_DIR}/access.log combined
    </VirtualHost>
-
    ```
-   이제 virtualhost가 충돌하지 않게 정리합니다.
+
+   4. 이제 virtualhost가 충돌하지 않게 정리합니다.
    ```
    cd /etc/apache2/sites-enabled
    ls
@@ -80,7 +80,16 @@ django를 다중화해보자
    sudo a2ensite cluster.conf
    ```
 
-   아파치 서버 재시작
+   5. 이제 필요한 mod를 enable 해줍니다. 
+   ```
+   sudo a2enmod proxy
+   sudo a2enmod proxy_balancer
+   sudo a2enmod lbmethod_byrequests
+   sudo a2enmod headers
+   sudo a2enmod proxy_http
+   ```
+
+   6. 아파치 서버 재시작
    ```
    sudo service apache2 restart
    ```
