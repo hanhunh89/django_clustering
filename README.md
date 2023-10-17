@@ -21,12 +21,47 @@ django를 다중화해보자
 
 ------------------
 시작해보자
+## DB서버 구성
+### 1. DB에 새로운 WAS가 접속할 수 있도록 구성한다. 
 
-1. 새로운 was(django) 서버 구성 및 gunicorn 구동
+## WAS서버 구성
+### 1. 새로운 django 서버 구성 및 django settings.py 파일에서 mysql 접속 설정
 
    *https://github.com/hanhunh89/insta_clone 을 참고하여 django를 하나 더 구성한다.
 
-3. 아파치 서버 설정
+  setting.py파일을 아래와 같이 수정한다. 
+  SQLlite 내용을 주석처리하고 mysql 내용을 적용한다. 
+  ```
+  '''
+  #setting for SQLlite
+  DATABASES = {
+    'default': {
+      'ENGINE': 'django.db.backends.sqlite3',
+      'NAME': BASE_DIR / 'db.sqlite3',
+    }
+  }
+  #setting for mysql
+  '''
+  DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mydatabase',
+        'USER': 'myuser',
+        'PASSWORD': '12341234',
+        'HOST': '34.64.146.23',
+        'PORT': '3306',
+     }
+  }
+  ```
+
+### 2. gunicorn 구동
+  *https://github.com/hanhunh89/insta_clone 을 참고하여 gunicorn 구동
+  ```
+  gunicorn --bind 0:8000 myproject.wsgi:application 
+  ```
+
+## WEB 서버 구성 
+### 1. 아파치 서버 설정
 
    virtualhost를 수정합니다.
 
@@ -59,7 +94,7 @@ django를 다중화해보자
    </VirtualHost>
    ```
 
-4. 이제 virtualhost가 충돌하지 않게 정리합니다.
+### 2. 이제 virtualhost가 충돌하지 않게 정리합니다.
    ```
    cd /etc/apache2/sites-enabled
    ls
@@ -80,7 +115,7 @@ django를 다중화해보자
    sudo a2ensite cluster.conf
    ```
 
-5. 이제 필요한 mod를 enable 해줍니다. 
+### 3. 이제 필요한 mod를 enable 해줍니다. 
    ```
    sudo a2enmod proxy
    sudo a2enmod proxy_balancer
@@ -89,12 +124,12 @@ django를 다중화해보자
    sudo a2enmod proxy_http
    ```
 
-6. 아파치 서버 재시작
+### 4. 아파치 서버 재시작
    ```
    sudo service apache2 restart
    ```
 
-7. fail over test
+## FAIL OVER TEST
    이제 두개의 장고 서버가 클러스터링 되었습니다. 
    하나의 장고서버가 fail되면 자연스럽게 나머지 하나의 서버로 접속합니다.
 
