@@ -21,9 +21,6 @@ django를 다중화해보자
 
 ------------------
 시작해보자
-## DB서버 구성
-### 1. DB에 새로운 WAS가 접속할 수 있도록 구성한다. 
-
 ## WAS서버 구성
 ### 1. 새로운 django 서버 구성 및 django settings.py 파일에서 mysql 접속 설정
 
@@ -59,6 +56,24 @@ django를 다중화해보자
   ```
   gunicorn --bind 0:8000 myproject.wsgi:application 
   ```
+
+## DB서버 구성
+### 1. DB에 새로운 WAS가 접속할 수 있도록 구성한다. 
+  db에 접속 후 다음의 쿼리로 db에 접속 가능한 django 서버 ip를 확인한다.
+  ```
+  mariaDB [myDB]> SELECT user, host FROM mysql.user WHERE user = 'myuser'
+  ```
+  이전에 insta_clone에서 구성한 한개의 서버만 보일것이다.
+  다음의 명령어로 새로 만든 django 서버도 추가해준다.
+  ```
+  GRANT ALL PRIVILEGES ON myDB.* TO 'myuser'@'34.125.160.132' IDENTIFIED BY 'password123123' WITH GRANT OPTION;
+  FLUSH PRIVILEGES;
+  ```
+  이제 다시 db에 접속가능한 django 서버 ip를 확인하면 두개의 ip가 뜰 것이다.
+  ```
+  mariaDB [myDB]> SELECT user, host FROM mysql.user WHERE user = 'myuser'
+  ```
+
 
 ## WEB 서버 구성 
 ### 1. 아파치 서버 설정
