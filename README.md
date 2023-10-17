@@ -28,7 +28,9 @@ django를 다중화해보자
 
 3. 아파치 서버 설정
 
-   virtualhost를 수정합니다. 
+   virtualhost를 수정합니다.
+   *아파치 공식문서를 참고했습니다.
+   *https://httpd.apache.org/docs/2.4/mod/mod_proxy_balancer.html
    ```
    cd /etc/apache2/conf-available
    ```
