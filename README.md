@@ -192,3 +192,32 @@ gcp의 클라우드 스토리를 사용해 봅시다.
   ```
   pip install django-storages[google]
   ```
+
+
+
+
+
+
+
+
+
+------
+1. 버킷 만들고 공개하기
+
+2. 편집자 계정 생성하고 키 파일 받기
+
+3. setting에 옵션값 추가하기
+
+5. colectstatic 하기
+python manage.py collectstatic
+
+
+
+MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
+from django.db import models
+
+class MyModel(models.Model):
+    image = models.ImageField(upload_to='media/')
+
+이 내용 확인
+
