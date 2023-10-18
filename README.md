@@ -185,3 +185,10 @@ django를 다중화해보자
 이미지나 동영상 파일 같은 첨부파일은 별도의 스토리지에 저장합니다.
 
 gcp의 클라우드 스토리를 사용해 봅시다.
+
+# Google Cloud Storage 설정
+
+## 1. django-storages 설치
+  ```
+  pip install django-storages[google]
+  ```
