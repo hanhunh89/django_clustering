@@ -205,19 +205,49 @@ gcp의 클라우드 스토리를 사용해 봅시다.
 1. 버킷 만들고 공개하기
 
 2. 편집자 계정 생성하고 키 파일 받기
-
+   -키 파일 장고서버로 이동
 3. setting에 옵션값 추가하기
+#setting for Google Cloud Storage
+#python manage.py collectstatic 하면 STATICFILES_DIRS에 있는 파일을 STATIC_ROOT로 모은다.
+#하지만 google cloud storate를 위해 STORAGES={"staticfiles" : ~}를 설정해서 gcloud로 간다.
+STATICFILES_DIRS = [
+  os.path.join(BASE_DIR, 'static'),
+]
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "project_id": "dogwood-range-400908",
+            "bucket_name": "insta_clone_storage",
+            "location": "my",  # django에 생성할 디렉토리 이름
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "project_id": "dogwood-range-400908",
+            "bucket_name": "insta_clone_storage",
+            "location": "my",  # django에 생성할 디렉토리 이름
+        },
+    },
+}
 
-5. colectstatic 하기
+from google.oauth2 import service_account
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    "/home/embdaramzi/dogwood-range-400908-bbc8b5082e28.json"
+)
+
+
+
+
+4. 장고서버에 google-auth 설치
+pip install django-storages
+pip install google-cloud
+pip install google-auth
+pip install google-cloud-storage
+
+4. colectstatic 하기
 python manage.py collectstatic
 
 
-
-MEDIA_URL = 'https://storage.googleapis.com/{}/'.format(GS_BUCKET_NAME)
-from django.db import models
-
-class MyModel(models.Model):
-    image = models.ImageField(upload_to='media/')
-
-이 내용 확인
 
