@@ -232,6 +232,11 @@ gcp의 클라우드 스토리를 사용해 봅시다.
   #setting for Google Cloud Storage
   #python manage.py collectstatic 하면 STATICFILES_DIRS에 있는 파일을 STATIC_ROOT로 모은다.
   #하지만 google cloud storate를 위해 STORAGES={"staticfiles" : ~}를 설정해서 gcloud로 간다.
+
+  #이제 미디어파일과 스태틱파일은 google storage에 저장되기 때문에 아래 설정 불필요
+  #STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+  #MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
   STATICFILES_DIRS = [ 
     "/home/embdaramzi/my/insta/myenv/myproject/posts/static",
     "/home/embdaramzi/my/insta/myenv/myproject/media",
@@ -263,8 +268,18 @@ gcp의 클라우드 스토리를 사용해 봅시다.
   )
 
   ```
+## 4. django settings.py 수정
+  ```
+  cd /home/embdaramzi/my/insta/myenv/myproject/myproject
+  nano urls.py
+  ```
+  ```
+  #클라우드 스토리지 설정으로 해당 내용 불필요
+  #urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+  #urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+  ```
 
-## 4. static 파일을 google cloud storage로 복사
+## 5. static 파일을 google cloud storage로 복사
   django 서버에 있는 static 파일을 복사합시다.
   static 파일은 js, image, css등의 변하지 않는 파일을 의미합니다.
 
@@ -276,7 +291,7 @@ gcp의 클라우드 스토리를 사용해 봅시다.
   ```
   이후 클라우드 스토리지를 확인하면 js파일과 이미지 파일이 복사된 것을 확인할 수 있습니다. 
   
-## django 구동
+## 6. django 구동
   ```
   gunicorn --bind 0:8000 myproject.wsgi:application
   ```
