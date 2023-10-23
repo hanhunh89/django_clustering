@@ -318,4 +318,12 @@ gcp의 클라우드 스토리를 사용해 봅시다.
 redis는 메모리에서 돌아가서 겁나 빠르고 key-value 저장을 지원하여
 session data를 다루기에 적합합니다. 
 
+aws나 gcp에서 다양한 서비스를 지원하지만 우리는 별도의 서버에 redis를 구축합니다.
+redis를 사용할 줄 알면 클라우드 서비스 이용은 어렵지 않기 때문입니다. 
+
+## 1. redis 설치
+  ``
+  sudo apt-get update
+  sudo apt-get install redis
+  ```
 
