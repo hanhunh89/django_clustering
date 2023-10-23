@@ -327,3 +327,25 @@ redis를 사용할 줄 알면 클라우드 서비스 이용은 어렵지 않기 
   sudo apt-get install redis
   ```
 
+## 2. django 서버에서 redis 관련 lib 설치
+  ```
+  pip install django-redis
+  sudo apt-get install redis-tools
+
+  ```
+## 3. redis debug를 위해 log level 변경
+  로그레벨은 아래 중 하나를 고를 수 있다. 우리는 debug로 바꿀것이다.
+  그 상태로 redis가 돌아가는 것을 살펴보자.
+    debug: 디버깅용 로그 레벨
+    verbose: 상세한 로그 레벨
+    notice: 일반적인 로그 레벨 (기본값)
+    warning: 경고 레벨
+    critical: 중요한 로그 레벨
+    alert: 경고 레벨
+    emergency: 긴급한 로그 레벨
+  ```
+  sudo nano /etc/redis/redis.conf
+  #loglevel notice
+  loglevel verdose
+  ```
+->>> redis bind에서 접속가능 설정 해주고 로그레벨 변경핳자. 로그레벨 변경하면 왜 에러나지..오타인가..
