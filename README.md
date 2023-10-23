@@ -188,66 +188,97 @@ gcp의 클라우드 스토리를 사용해 봅시다.
 
 # Google Cloud Storage 설정
 
-## 1. django-storages 설치
+## 1. Google Cloud Storage 생성
+  https://cloud.google.com/?hl=ko 접속
+  <console로 이동> - google cloud 옆에 <탐색메뉴> - <cloud storage> - <만들기>
+  버킷 이름을 지정하여 생성합니다. 저는 "my_insta_clone" 으로 정했습니다. 
+
+## 2. 사용자 권한설정 수정
+
+이제 내 스토리지에 일반 사용자가 접근 가능하도록 수정합시다. 
+<my_insta_clone> - <권한> - <공개 액세스 방지 삭제> - <확인>
+동일한 화면에서 <주 구성원 추가> - 새 주 구성원에 <allUsers> 입력 - 역할에 <환경 및 스토리지 객체 뷰어> 입력
+<저장> - <공개 액세스 허용>
+
+이제 스토리지에 올린 파일을 누구나 접근할 수 있습니다. 
+
+## 3. django가 접속할 수 있는 권한 설정
+
+이제 django가 cloud storage에 접근하여 파일을 업로드 할 수 있도록 수정합시다.
+  https://cloud.google.com/?hl=ko 접속
+  <console로 이동> - google cloud 옆에 <탐색메뉴> - <IAM 및 관리자> - <서비스계정> -
+  <서비스 계정 만들기> - 서비스 계정 이름에 계정명을 입력합니다. 저는 <django>라 했습니다.이후
+  <만들고 계속하기> - 역할선택에 <편집자> 입력 - <완료>
+
+  여기서 django 서버에 입력할 키 파일을 받아야 합니다.
+  <서비스 계정> - 생성한 계정 클릭 - <키> - <키 추가> - <새 키 만들기> - <json> - <만들기>
+  이후엔 자동으로 키 파일이 다운로드 됩니다. 이 키 파일을 django 서버에 넣을겁니다. 
+
+# django 서버 설정
+
+## 1. django 서버에서 필요한 lib 설치
   ```
-  pip install django-storages[google]
+  pip install django-storages
+  pip install google-cloud
+  pip install google-auth
+  pip install google-cloud-storage
   ```
 
+## 2. 서버에 키 파일 업로드하기 
+  django 서버에 키파일을 업로드하고 위치를 기억합니다.
 
+## 3. django settings.py 수정
+  ```
+  #setting for Google Cloud Storage
+  #python manage.py collectstatic 하면 STATICFILES_DIRS에 있는 파일을 STATIC_ROOT로 모은다.
+  #하지만 google cloud storate를 위해 STORAGES={"staticfiles" : ~}를 설정해서 gcloud로 간다.
+  STATICFILES_DIRS = [ 
+    "/home/embdaramzi/my/insta/myenv/myproject/posts/static",
+    "/home/embdaramzi/my/insta/myenv/myproject/media",
+  ]
 
-
-
-
-
-
-
-------
-1. 버킷 만들고 공개하기
-
-2. 편집자 계정 생성하고 키 파일 받기
-   -키 파일 장고서버로 이동
-3. setting에 옵션값 추가하기
-#setting for Google Cloud Storage
-#python manage.py collectstatic 하면 STATICFILES_DIRS에 있는 파일을 STATIC_ROOT로 모은다.
-#하지만 google cloud storate를 위해 STORAGES={"staticfiles" : ~}를 설정해서 gcloud로 간다.
-STATICFILES_DIRS = [
-  os.path.join(BASE_DIR, 'static'),
-]
-STORAGES = {
+  STORAGES = {
     "default": {
-        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
-        "OPTIONS": {
-            "project_id": "dogwood-range-400908",
-            "bucket_name": "insta_clone_storage",
-            "location": "my",  # django에 생성할 디렉토리 이름
-        },
+      "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+      "OPTIONS": {
+        "project_id": "dogwood-range-400908", #여기에 google cloud project id 입력
+        "bucket_name": "insta_clone_storage", #여기에 bucket name 입력
+        "location": "my",  # google cloud stroage 에 생성할 디렉토리 이름
+      },
     },
     "staticfiles": {
-        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
-        "OPTIONS": {
-            "project_id": "dogwood-range-400908",
-            "bucket_name": "insta_clone_storage",
-            "location": "my",  # django에 생성할 디렉토리 이름
-        },
+      "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+      "OPTIONS": {
+        "project_id": "dogwood-range-400908",
+        "bucket_name": "insta_clone_storage",
+        "location": "my",  # django에 생성할 디렉토리 이름
+      },
     },
-}
+  }
 
-from google.oauth2 import service_account
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    "/home/embdaramzi/dogwood-range-400908-bbc8b5082e28.json"
-)
+  from google.oauth2 import service_account
+  GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    # 여기에 키파일의 경로를 입력
+    "/home/embdaramzi/my/insta/dogwood-range-400908-d7cf1dd03e3b.json"
+  )
 
+  ```
 
+## 4. static 파일을 google cloud storage로 복사
+  django 서버에 있는 static 파일을 복사합시다.
+  static 파일은 js, image, css등의 변하지 않는 파일을 의미합니다.
 
+  그 전에 /home/embdaramzi/my/insta/myenv/myproject/static 아래에 있는 내용을
+  /home/embdaramzi/my/insta/myenv/myproject/posts/static으로 이동시킵시다.
+  static_root와 staticfiles_dirs가 겹치면 안되기 때문입니다.
+  ```
+  python3 manage.py collectstatic
+  ```
+  이후 클라우드 스토리지를 확인하면 js파일과 이미지 파일이 복사된 것을 확인할 수 있습니다. 
+  
+## django 구동
+  ```
+  gunicorn --bind 0:8000 myproject.wsgi:application
+  ```
 
-4. 장고서버에 google-auth 설치
-pip install django-storages
-pip install google-cloud
-pip install google-auth
-pip install google-cloud-storage
-
-4. colectstatic 하기
-python manage.py collectstatic
-
-
-
+  이제 홈페이지로 접속하면 정상적인 화면을 볼 수 있습니다. 
