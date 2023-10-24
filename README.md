@@ -331,21 +331,32 @@ redis를 사용할 줄 알면 클라우드 서비스 이용은 어렵지 않기 
   ```
   pip install django-redis
   sudo apt-get install redis-tools
+  python manage.py createcachetable
+  ```
 
+## 3. django settings.py 수정
+  ```
+  CACHES = {
+    "default": {
+      "BACKEND": "django_redis.cache.RedisCache",
+      "LOCATION": "redis://34.64.173.202:6379/1",
+        "OPTIONS": {
+        "CLIENT_CLASS": "django_redis.client.DefaultClient",
+      }
+    }
+  }
+
+  SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+  SESSION_CACHE_ALIAS = "default"
   ```
 ## 3. redis debug를 위해 log level 변경
-  로그레벨은 아래 중 하나를 고를 수 있다. 우리는 debug로 바꿀것이다.
-  그 상태로 redis가 돌아가는 것을 살펴보자.
-    debug: 디버깅용 로그 레벨
-    verbose: 상세한 로그 레벨
-    notice: 일반적인 로그 레벨 (기본값)
-    warning: 경고 레벨
-    critical: 중요한 로그 레벨
-    alert: 경고 레벨
-    emergency: 긴급한 로그 레벨
+  로그레벨은 아래 중 하나를 고를 수 있다. 우리는 debug로 바꿀것이다.  그 상태로 redis가 돌아가는 것을 살펴보자.
+  또한 외부에서 접속할 수 있게 보안설정을 변경한다. 
   ```
   sudo nano /etc/redis/redis.conf
   #loglevel notice
-  loglevel verdose
+  loglevel debug
+  bind 123.123.123.123 # 여기엔 redis 서버의 ip를 입력함.
   ```
-->>> redis bind에서 접속가능 설정 해주고 로그레벨 변경핳자. 로그레벨 변경하면 왜 에러나지..오타인가..
+->>> 아파치 설정을 바꿔서 스티키 세션 수정한다.
+-> 또한 서버의 소스코드를 바꿔서 서버별로 색깔 다르게 해서 다르게 접속 확
