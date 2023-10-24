@@ -321,13 +321,23 @@ session data를 다루기에 적합합니다.
 aws나 gcp에서 다양한 서비스를 지원하지만 우리는 별도의 서버에 redis를 구축합니다.
 redis를 사용할 줄 알면 클라우드 서비스 이용은 어렵지 않기 때문입니다. 
 
-## 1. redis 설치
-  ``
+## 1. redis 서버에 redis 설치
+  ```
   sudo apt-get update
   sudo apt-get install redis
   ```
 
-## 2. django 서버에서 redis 관련 lib 설치
+## 2. redis 서버에서 redis.conf변경
+  로그레벨은 아래 중 하나를 고를 수 있다. 우리는 debug로 바꿀것이다.  그 상태로 redis가 돌아가는 것을 살펴보자.
+  또한 외부에서 접속할 수 있게 보안설정을 변경한다. 
+  ```
+  sudo nano /etc/redis/redis.conf
+  #loglevel notice
+  loglevel debug
+  bind 123.123.123.123 # 여기엔 redis 서버의 ip를 입력함.
+  ```
+
+## 3. django 서버에서 redis 관련 lib 설치
   ```
   pip install django-redis
   sudo apt-get install redis-tools
@@ -349,14 +359,8 @@ redis를 사용할 줄 알면 클라우드 서비스 이용은 어렵지 않기 
   SESSION_ENGINE = "django.contrib.sessions.backends.cache"
   SESSION_CACHE_ALIAS = "default"
   ```
-## 3. redis debug를 위해 log level 변경
-  로그레벨은 아래 중 하나를 고를 수 있다. 우리는 debug로 바꿀것이다.  그 상태로 redis가 돌아가는 것을 살펴보자.
-  또한 외부에서 접속할 수 있게 보안설정을 변경한다. 
   ```
-  sudo nano /etc/redis/redis.conf
-  #loglevel notice
-  loglevel debug
-  bind 123.123.123.123 # 여기엔 redis 서버의 ip를 입력함.
+  gunicon 재시작
   ```
 ->>> 아파치 설정을 바꿔서 스티키 세션 수정한다.
 -> 또한 서버의 소스코드를 바꿔서 서버별로 색깔 다르게 해서 다르게 접속 확
