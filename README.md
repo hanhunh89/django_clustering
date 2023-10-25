@@ -362,7 +362,31 @@ redis를 사용할 줄 알면 클라우드 서비스 이용은 어렵지 않기 
   SESSION_CACHE_ALIAS = "default"
   ```
   ```
-  gunicon 재시작
+  gunicorn --bind 0:8000 myproject.wsgi:application
   ```
-->>> 아파치 설정을 바꿔서 스티키 세션 수정한다.
--> 또한 서버의 소스코드를 바꿔서 서버별로 색깔 다르게 해서 다르게 접속 확
+## 4. apache2 
+vitualhost에서 sticky session 을 삭제합니다.
+```
+<VirtualHost *:80>
+  ServerName 34.32.11.254
+  ProxyPass / balancer://mycluster/
+  ProxyPassReverse / balancer://mycluster/
+  <Proxy balancer://mycluster>
+    BalancerMember http://34.64.44.173:8000
+    BalancerMember http://34.125.160.132:8000
+  </Proxy>  
+     
+  ErrorLog ${APACHE_LOG_DIR}/error.log
+  CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+```
+sudo service apache2 restart
+```
+
+
+## 5. failover test
+이제 웹사이트로 접속한 후 현재 접속한 서버를 죽여도 
+세션을 유지한채로 다음 서버로 접속합니다. 
+이상으로 django cluster를 마칩니다. 
+  
