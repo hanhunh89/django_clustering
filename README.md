@@ -335,13 +335,15 @@ redis를 사용할 줄 알면 클라우드 서비스 이용은 어렵지 않기 
   #loglevel notice
   loglevel debug
   bind 123.123.123.123 # 여기엔 redis 서버의 ip를 입력함.
+                       # 이 옵션이라면 redis 서버에 누구나 접근 가능합니다.
+                       # 저는 방화벽에서 redis 서버의 접근을 차단하였습니다. 
   ```
 
 ## 3. django 서버에서 redis 관련 lib 설치
   ```
   pip install django-redis
   sudo apt-get install redis-tools
-  python manage.py createcachetable
+  ##python manage.py createcachetable
   ```
 
 ## 3. django settings.py 수정
